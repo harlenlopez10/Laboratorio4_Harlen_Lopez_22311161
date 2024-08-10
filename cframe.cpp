@@ -12,8 +12,15 @@
 cframe::cframe(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::cframe)
+    , scene(new QGraphicsScene(this))
 {
     ui->setupUi(this);
+
+    // Configurar la escena
+    setupScene();
+
+    // Añadir figuras
+    addFigures();
 
     Negrita negrita;
 
@@ -37,6 +44,31 @@ cframe::~cframe()
     }
 }
 
+
+void cframe::setupScene() {
+    // Configurar la vista para usar la escena
+    ui->graphicsView->setScene(scene);
+    ui->graphicsView->setRenderHint(QPainter::Antialiasing);  // Mejor calidad de renderizado
+}
+
+void cframe::addFigures() {
+    // Crear y añadir un rectángulo
+    Rectangulo *rect = new Rectangulo(100, 50, Qt::blue);
+    rect->setPos(0, 0);
+    scene->addItem(rect);
+
+    // Crear y añadir un círculo
+    Circulo *ellipse = new Circulo(25, Qt::green);
+    ellipse->setPos(150, 25);  // Centramos el círculo
+    scene->addItem(ellipse);
+
+    // Crear y añadir un triángulo
+    Triangulo *triangle = new Triangulo(100, 86.6, Qt::red);  // Base y altura
+    triangle->setPos(250, 50);  // Posicionarlo
+    scene->addItem(triangle);
+}
+
+//EJERCICIO 1
 void cframe::on_btnAgregarTarea_clicked()
 {
     QString titulo = ui->TituloTarea->text();
@@ -58,7 +90,7 @@ void cframe::on_btnAgregarTarea_clicked()
         nuevaTarea->mostrarDetalles();
     }
 }
-
+//FIN EJERCICIO 1
 
 void cframe::on_pushButton_clicked()
 {
@@ -95,7 +127,7 @@ void cframe::on_btnEjercicio2_2_clicked()
     ui->stackedWidget->setCurrentIndex(4);
 }
 
-
+//EJERCICIO 3
 void cframe::on_pushButton_3_clicked()
 {
     QTextCursor cursor = ui->textEdit->textCursor();
@@ -135,7 +167,10 @@ void cframe::on_btnSubrayado_clicked()
     }
 }
 
+//FIN EJERCICIO 3
 
+
+//EJERCICIO 4
 void cframe::on_btnAgg_clicked()
 {
     QString nombre = ui->nombreEdit->text();
@@ -178,7 +213,7 @@ void cframe::on_btnMod_clicked()
         producto->setPrecio(ui->SBprecioEdit->text().toDouble());
         producto->setCantidad(ui->spinBoxCantidad->value());
 
-        // Modificación específica según el tipo de producto
+
         if (Electronico* electronico = dynamic_cast<Electronico*>(producto)) {
             electronico->setMarca(ui->lineEditMarca->text());
         } else if (Ropa* ropa = dynamic_cast<Ropa*>(producto)) {
@@ -197,4 +232,5 @@ void cframe::actualizarLista() {
         ui->listWidget->addItem(producto->getInfo());
     }
 }
+//FIN EJERCICIO 4
 

@@ -21,6 +21,12 @@
 #include "ComandoNegrita.h"
 #include "ComandoSubrayado.h"
 
+#include <QGraphicsView>
+#include <QGraphicsScene>
+#include "Circulo.h"
+#include "Rectangulo.h"
+#include "Triangulo.h"
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -78,6 +84,11 @@ private:
     QLineEdit *precioEdit;
     QLineEdit *cantidadEdit;
     QLineEdit *extraEdit;
+
+    QGraphicsScene *scene;
+
+    void setupScene();
+    void addFigures();
 
 
 };
