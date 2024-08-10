@@ -4,17 +4,19 @@
 #include "Producto.h"
 
 class Ropa : public Producto {
+    QString talla;
+
 public:
-    Ropa(const QString &nombre, double precio, int cantidad, const QString &tamaño)
-        : Producto(nombre, precio, cantidad), tamaño(tamaño) {}
+    Ropa(const QString& nombre, double precio, int cantidad, const QString& talla)
+        : Producto(nombre, precio, cantidad), talla(talla) {}
 
-    QString tipo() const override { return "Ropa"; }
+    QString getTalla() const { return talla; }
+    void setTalla(const QString& talla) { this->talla = talla; }
 
-    QString getTamaño() const { return tamaño; }
-    void setTamaño(const QString &tamaño) { this->tamaño = tamaño; }
-
-private:
-    QString tamaño;
+    QString getInfo() const override {
+        return QString("Ropa: %1, Talla: %2, Precio: %3, Cantidad: %4")
+        .arg(nombre).arg(talla).arg(precio).arg(cantidad);
+    }
 };
 
 #endif // ROPA_H

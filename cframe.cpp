@@ -2,6 +2,10 @@
 #include "ui_cframe.h"
 #include "Tarea.h"
 
+#include "Electronico.h"
+#include "Ropa.h"
+#include "Alimento.h"
+
 #include <QCoreApplication>
 #include <QApplication>
 
@@ -27,6 +31,10 @@ cframe::cframe(QWidget *parent)
 cframe::~cframe()
 {
     delete ui;
+
+    for (Producto* producto : inventario) {
+        delete producto;
+    }
 }
 
 void cframe::on_btnAgregarTarea_clicked()
@@ -130,35 +138,32 @@ void cframe::on_btnSubrayado_clicked()
 
 void cframe::on_btnAgg_clicked()
 {
-    QString nombre = nombreEdit->text();
-    double precio = precioEdit->text().toDouble();
-    int cantidad = cantidadEdit->text().toInt();
-    QString extra = extraEdit->text();
+    QString nombre = ui->nombreEdit->text();
+    double precio = ui->precioEdit->text().toDouble();
+    int cantidad = ui->spinBoxCantidad->value();
 
-    Producto *producto = nullptr;
-
-    QString tipoSeleccionado = ui->comboBoxTipoProducto->currentText();
-
-    if (tipoSeleccionado == "Electronico") {
-        producto = new Electronico(nombre, precio, cantidad, extra);
-    } else if (tipoSeleccionado == "Ropa") {
-        producto = new Ropa(nombre, precio, cantidad, extra);
-    } else if (tipoSeleccionado == "Alimento") {
-        producto = new Alimento(nombre, precio, cantidad, extra);
+    if (ui->comboBoxTipoProducto->currentText() == "Electronico") {
+        QString marca = ui->lineEditMarca->text();
+        inventario.append(new Electronico(nombre, precio, cantidad, marca));
+    } else if (ui->comboBoxTipoProducto->currentText() == "Ropa") {
+        QString talla = ui->lineEditTalla->text();
+        inventario.append(new Ropa(nombre, precio, cantidad, talla));
+    } else if (ui->comboBoxTipoProducto->currentText() == "Alimento") {
+        QString fechaCaducidad = ui->lineEditFechaCaducidad->text();
+        inventario.append(new Alimento(nombre, precio, cantidad, fechaCaducidad));
     }
 
-    if (producto) {
-        productos.append(producto);
-        actualizarLista();
-    }
+    actualizarLista();
+
 }
 
 
 void cframe::on_btnDelete_clicked()
 {
-    int index = listaProductos->currentRow();
-    if (index >= 0 && index < productos.size()) {
-        delete productos.takeAt(index);
+    int index = ui->listWidget->currentRow();
+    if (index != -1) {
+        delete inventario[index];
+        inventario.removeAt(index);
         actualizarLista();
     }
 }
@@ -166,21 +171,30 @@ void cframe::on_btnDelete_clicked()
 
 void cframe::on_btnMod_clicked()
 {
-    int index = listaProductos->currentRow();
-    if (index >= 0 && index < productos.size()) {
-        Producto *producto = productos[index];
-        producto->setNombre(nombreEdit->text());
-        producto->setPrecio(precioEdit->text().toDouble());
-        producto->setCantidad(cantidadEdit->text().toInt());
-        // Actualiza atributos específicos aquí
+    int index = ui->listWidget->currentRow();
+    if (index != -1) {
+        Producto* producto = inventario[index];
+        producto->setNombre(ui->nombreEdit->text());
+        producto->setPrecio(ui->precioEdit->text().toDouble());
+        producto->setCantidad(ui->spinBoxCantidad->value());
+
+        // Modificación específica según el tipo de producto
+        if (Electronico* electronico = dynamic_cast<Electronico*>(producto)) {
+            electronico->setMarca(ui->lineEditMarca->text());
+        } else if (Ropa* ropa = dynamic_cast<Ropa*>(producto)) {
+            ropa->setTalla(ui->lineEditTalla->text());
+        } else if (Alimento* alimento = dynamic_cast<Alimento*>(producto)) {
+            alimento->setFechaCaducidad(ui->lineEditFechaCaducidad->text());
+        }
+
         actualizarLista();
     }
 }
 
 void cframe::actualizarLista() {
-    listaProductos->clear();
-    for (Producto *producto : productos) {
-        listaProductos->addItem(producto->getNombre() + " (" + producto->tipo() + ")");
+    ui->listWidget->clear();
+    for (const Producto* producto : inventario) {
+        ui->listWidget->addItem(producto->getInfo());
     }
 }
 

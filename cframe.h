@@ -15,6 +15,8 @@
 #include "Ropa.h"
 #include "Alimento.h"
 
+#include <QVector>
+
 #include "ComandoCursiva.h"
 #include "ComandoNegrita.h"
 #include "ComandoSubrayado.h"
@@ -63,6 +65,7 @@ private slots:
 
 private:
     void actualizarLista();
+     QVector<Producto*> inventario;
     Ui::cframe *ui;
 
     QTextEdit *textEdit;
@@ -74,10 +77,8 @@ private:
     QLineEdit *nombreEdit;
     QLineEdit *precioEdit;
     QLineEdit *cantidadEdit;
-    QLineEdit *extraEdit; // Para atributos específicos como marca, tamaño o fecha
-    /*QPushButton *agregarButton;
-    QPushButton *eliminarButton;
-    QPushButton *modificarButton;*/
-    QList<Producto*> productos;
+    QLineEdit *extraEdit;
+
+
 };
 #endif // CFRAME_H
