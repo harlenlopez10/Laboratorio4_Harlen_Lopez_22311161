@@ -126,10 +126,10 @@ void cframe::on_btnCursiva_clicked()
 void cframe::on_btnSubrayado_clicked()
 {
     QTextCursor cursor = ui->textEdit->textCursor();
-    if (cursor.hasSelection()) { // Verifica si hay texto seleccionado
+    if (cursor.hasSelection()) {
         subrayado.aplicar(cursor);
     } else {
-        // Si no hay texto seleccionado, podrías opcionalmente seleccionar todo el texto
+
         cursor.select(QTextCursor::Document);
         subrayado.aplicar(cursor);
     }
@@ -139,7 +139,7 @@ void cframe::on_btnSubrayado_clicked()
 void cframe::on_btnAgg_clicked()
 {
     QString nombre = ui->nombreEdit->text();
-    double precio = ui->precioEdit->text().toDouble();
+    double precio = ui->SBprecioEdit->value();
     int cantidad = ui->spinBoxCantidad->value();
 
     if (ui->comboBoxTipoProducto->currentText() == "Electronico") {
@@ -149,7 +149,7 @@ void cframe::on_btnAgg_clicked()
         QString talla = ui->lineEditTalla->text();
         inventario.append(new Ropa(nombre, precio, cantidad, talla));
     } else if (ui->comboBoxTipoProducto->currentText() == "Alimento") {
-        QString fechaCaducidad = ui->lineEditFechaCaducidad->text();
+        QString fechaCaducidad = ui->dateCaducidadEdit->text();
         inventario.append(new Alimento(nombre, precio, cantidad, fechaCaducidad));
     }
 
@@ -175,7 +175,7 @@ void cframe::on_btnMod_clicked()
     if (index != -1) {
         Producto* producto = inventario[index];
         producto->setNombre(ui->nombreEdit->text());
-        producto->setPrecio(ui->precioEdit->text().toDouble());
+        producto->setPrecio(ui->SBprecioEdit->text().toDouble());
         producto->setCantidad(ui->spinBoxCantidad->value());
 
         // Modificación específica según el tipo de producto
@@ -184,7 +184,7 @@ void cframe::on_btnMod_clicked()
         } else if (Ropa* ropa = dynamic_cast<Ropa*>(producto)) {
             ropa->setTalla(ui->lineEditTalla->text());
         } else if (Alimento* alimento = dynamic_cast<Alimento*>(producto)) {
-            alimento->setFechaCaducidad(ui->lineEditFechaCaducidad->text());
+            alimento->setFechaCaducidad(ui->dateCaducidadEdit->text());
         }
 
         actualizarLista();
